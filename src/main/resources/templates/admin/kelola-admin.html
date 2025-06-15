@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Manajemen Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-blue-50 font-sans">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-blue-800 text-white p-6 space-y-6">
+            <h2 class="text-2xl font-bold mb-10 text-center">KLINIK</h2>
+            <nav class="space-y-4">
+                <a href="/admin/dashboard" class="block py-2 px-4 hover:bg-blue-700 rounded">Dashboard</a>
+                <a href="/dokter" class="block py-2 px-4 hover:bg-blue-700 rounded">Dokter</a>
+                <a href="/pasien" class="block py-2 px-4 hover:bg-blue-700 rounded">Pasien</a>
+                <a href="/reservasi" class="block py-2 px-4 hover:bg-blue-700 rounded">Reservasi</a>
+                <a href="/admin/kelola" class="block py-2 px-4 bg-blue-700 rounded">Admin</a>
+                <a href="/logout" class="block py-2 px-4 mt-10 bg-red-500 hover:bg-red-600 text-white rounded text-center">Logout</a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-10">
+            <h1 class="text-3xl font-bold text-blue-700 mb-6">Manajemen Admin</h1>
+
+            <!-- Form -->
+            <div class="bg-white p-6 rounded-lg shadow-md mb-10 border">
+                <h2 class="text-xl font-semibold mb-4 text-blue-600"
+                    th:text="${admin.id == null ? 'Tambah Admin' : 'Edit Admin'}"></h2>
+                <form th:action="@{/admin/kelola}" th:object="${admin}" method="post" class="space-y-4">
+                    <input type="hidden" th:field="*{id}" />
+
+                    <div>
+                        <label class="block font-medium mb-1">Nama</label>
+                        <input type="text" th:field="*{nama}" required
+                            class="w-full border border-blue-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div>
+                        <label class="block font-medium mb-1">Username</label>
+                        <input type="text" th:field="*{username}" required
+                            class="w-full border border-blue-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div>
+                        <label class="block font-medium mb-1">Password</label>
+                        <input type="password" th:field="*{password}" required
+                            class="w-full border border-blue-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <button type="submit"
+                        class="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-lg">
+                        <span th:text="${admin.id == null ? 'Simpan' : 'Update'}"></span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Tabel -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white rounded-xl shadow border">
+                    <thead class="bg-blue-600 text-white">
+                        <tr>
+                            <th class="py-3 px-4 text-left">#</th>
+                            <th class="py-3 px-4 text-left">Nama</th>
+                            <th class="py-3 px-4 text-left">Username</th>
+                            <th class="py-3 px-4 text-left">Password</th>
+                            <th class="py-3 px-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="a, stat : ${listAdmin}" class="odd:bg-white even:bg-blue-50">
+                            <td class="py-2 px-4" th:text="${stat.index + 1}"></td>
+                            <td class="py-2 px-4" th:text="${a.nama}"></td>
+                            <td class="py-2 px-4" th:text="${a.username}"></td>
+                            <td class="py-2 px-4" th:text="${a.password}"></td>
+                            <td class="py-2 px-4 text-center">
+                                <div class="flex justify-center gap-2">
+                                    <a th:href="@{/admin/kelola/edit/{id}(id=${a.id})}"
+                                        class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded">Edit</a>
+                                    <a th:href="@{/admin/kelola/hapus/{id}(id=${a.id})}" onclick="return confirm('Yakin ingin menghapus admin ini?')"
+                                        class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded">Hapus</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
