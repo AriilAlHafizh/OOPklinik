@@ -2,55 +2,50 @@ package com.example.klinik.service;
 
 import com.example.klinik.entity.Admin;
 import com.example.klinik.entity.Pasien;
-import com.example.klinik.repository.PasienRepository;
 import com.example.klinik.repository.AdminRepository;
-
+import com.example.klinik.repository.PasienRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
-    private AdminRepository adminRepository;
+    private final AdminRepository adminRepository;
+    private final PasienRepository pasienRepository;
 
     @Autowired
-    private PasienRepository pasienRepository;
+    public UserDetailsServiceImpl(AdminRepository adminRepository, PasienRepository pasienRepository) {
+        this.adminRepository = adminRepository;
+        this.pasienRepository = pasienRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Cek apakah user adalah admin
+        // Cek Admin
         Admin admin = adminRepository.findByUsername(username);
         if (admin != null) {
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-
             return new org.springframework.security.core.userdetails.User(
-                    admin.getUsername(),
-                    admin.getPassword(),
-                    authorities
+                admin.getUsername(),
+                admin.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
             );
         }
 
-        // Jika bukan admin, cek apakah user adalah pasien
+        // Cek Pasien
         Pasien pasien = pasienRepository.findByUsername(username);
         if (pasien != null) {
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-
             return new org.springframework.security.core.userdetails.User(
-                    pasien.getUsername(),
-                    pasien.getPassword(),
-                    authorities
+                pasien.getUsername(),
+                pasien.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_USER"))
             );
         }
 
-        throw new UsernameNotFoundException("User tidak ditemukan");
+        throw new UsernameNotFoundException("Akun dengan username '" + username + "' tidak ditemukan");
     }
 }

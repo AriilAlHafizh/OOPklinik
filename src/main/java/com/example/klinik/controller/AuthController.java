@@ -14,6 +14,7 @@ import com.example.klinik.entity.Admin;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 
@@ -25,6 +26,9 @@ public class AuthController {
 
     @Autowired
     private AdminRepository adminRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
     public String loginPage() {
@@ -41,6 +45,8 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@ModelAttribute Pasien pasien) {
     pasien.setRole("ROLE_USER"); // Tambahkan ini jika belum otomatis
+    // Hash password sebelum simpan
+    pasien.setPassword(passwordEncoder.encode(pasien.getPassword()));
     pasienRepo.save(pasien);
     return "redirect:/login";
     }
