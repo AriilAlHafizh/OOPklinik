@@ -1,122 +1,105 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="id">
-
 <head>
     <meta charset="UTF-8" />
-    <title>Kelola Reservasi - Klinik Sehat</title>
+    <title>Reservasi Pasien - Klinik Sehat</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // JavaScript untuk filter jadwal berdasarkan dokter
+        function filterJadwal() {
+            const dokterId = document.getElementById('dokterSelect').value;
+            fetch(`/reservasi/jadwal-by-dokter/${dokterId}`)  // ✅ Perbaikan di sini
+                .then(response => response.json())
+                .then(data => {
+                    const jadwalSelect = document.getElementById('jadwalSelect');
+                    jadwalSelect.innerHTML = '<option value="">-- Pilih Jadwal --</option>';
+                    data.forEach(j => {
+                        const option = document.createElement('option');
+                        option.value = j.id;
+                        option.text = `${j.hari} | ${j.jamMulai} - ${j.jamSelesai}`;
+                        jadwalSelect.appendChild(option);
+                    });
+                });
+        }
+    </script>
 </head>
-
 <body class="bg-blue-50 text-gray-800 min-h-screen flex flex-col">
 
     <!-- Header -->
     <header class="bg-blue-800 text-white py-4 shadow-md">
         <div class="container mx-auto px-6 flex justify-between items-center">
-            <h1 class="text-2xl font-bold">Klinik Sehat - Kelola Reservasi</h1>
+            <h1 class="text-2xl font-bold">Klinik Sehat</h1>
             <nav class="space-x-4">
-                <a href="/admin/dashboard" class="hover:underline">Dashboard</a>
-                <a href="/admin/reservasi" class="underline font-semibold">Reservasi</a>
+                <a href="/user/dashboard" class="hover:underline">Dashboard</a>
+                <a href="/user/reservasi" class="underline font-semibold">Reservasi</a>
                 <a href="/logout" class="hover:underline">Logout</a>
             </nav>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-6 flex-grow py-10">
-
-        <!-- Form Tambah Reservasi -->
+    <main class="container mx-auto px-6 py-10 flex-grow">
         <section class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md mb-12">
-            <h2 class="text-xl font-semibold mb-6 text-blue-800">Form Tambah Reservasi</h2>
-            <form th:action="@{/admin/reservasi}" th:object="${reservasi}" method="post" class="space-y-6">
+            <h2 class="text-xl font-semibold mb-6 text-blue-800">Form Reservasi Pasien</h2>
+            <form th:action="@{/reservasi/buat}" method="post" class="space-y-6">
 
-                <!-- Pilih Pasien -->
+
                 <div>
-                    <label for="pasien" class="block mb-2 font-medium text-gray-700">Nama Pasien</label>
-                    <select id="pasien" th:field="*{pasien.id}" required
-                        class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- Pilih Pasien --</option>
-                        <option th:each="pasien : ${listPasien}" 
-                                th:value="${pasien.id}" 
-                                th:text="${pasien.nama} + ' | ' + ${pasien.alamat} + ' | ' + ${pasien.telepon}">
-                        </option>
+                    <label for="namaPasien" class="block mb-2 font-medium text-gray-700">Nama Pasien</label>
+                    <input type="text" id="namaPasien" name="namaPasien"
+                           th:value="${pasien.nama}" readonly
+                           class="w-full px-4 py-2 border border-blue-300 rounded-lg bg-gray-100 text-gray-700" />
+                </div>
+
+                <div>
+                    <label for="tanggalReservasi" class="block mb-2 font-medium text-gray-700">Tanggal Reservasi</label>
+                    <input type="date" id="tanggalReservasi" name="tanggalReservasi" required
+                           class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                </div>
+
+                <div>
+                    <label for="dokterSelect" class="block mb-2 font-medium text-gray-700">Pilih Dokter</label>
+                    <select id="dokterSelect" name="dokterId" required onchange="filterJadwal()"
+                            class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Pilih Dokter --</option>
+                        <option th:each="dokter : ${listDokter}" 
+                                th:value="${dokter.id}" 
+                                th:text="${dokter.nama}"></option>
                     </select>
                 </div>
 
-                <!-- Pilih Jadwal -->
                 <div>
-                    <label for="jadwal" class="block mb-2 font-medium text-gray-700">Pilih Jadwal</label>
-                    <select id="jadwal" th:field="*{jadwal.id}" required
-                        class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- Pilih Hari & Jam --</option>
-                        <option th:each="jadwal : ${listJadwal}" 
-                                th:value="${jadwal.id}" 
-                                th:text="${jadwal.hari + ' | ' + jadwal.jamMulai + ' - ' + jadwal.jamSelesai}">
-                        </option>
+                    <label for="jadwalSelect" class="block mb-2 font-medium text-gray-700">Pilih Jadwal</label>
+                    <select id="jadwalSelect" name="jadwal.Id" required
+                            class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Pilih Jadwal --</option>
                     </select>
                 </div>
 
-                <!-- Keluhan -->
                 <div>
                     <label for="keluhan" class="block mb-2 font-medium text-gray-700">Keluhan</label>
-                    <textarea id="keluhan" th:field="*{keluhan}" rows="4" placeholder="Masukkan keluhan..."
-                        required
-                        class="w-full border border-gray-300 rounded px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    <textarea id="keluhan" name="keluhan" rows="4" required
+                        class="w-full border border-blue-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 resize-none"
+                        placeholder="Masukkan keluhan Anda..."></textarea>
                 </div>
 
-                <!-- Submit Button -->
                 <div>
                     <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded transition">
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition">
                         Simpan Reservasi
                     </button>
                 </div>
 
             </form>
         </section>
-
-        <!-- Daftar Reservasi -->
-        <section class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-semibold mb-6 text-blue-800">Daftar Reservasi</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full border-collapse border border-gray-300 text-left">
-                    <thead class="bg-blue-100">
-                        <tr>
-                            <th class="border border-gray-300 px-4 py-2">No</th>
-                            <th class="border border-gray-300 px-4 py-2">Nama Pasien</th>
-                            <th class="border border-gray-300 px-4 py-2">Alamat</th>
-                            <th class="border border-gray-300 px-4 py-2">No. Telp</th>
-                            <th class="border border-gray-300 px-4 py-2">Dokter</th>
-                            <th class="border border-gray-300 px-4 py-2">Hari</th>
-                            <th class="border border-gray-300 px-4 py-2">Jam</th>
-                            <th class="border border-gray-300 px-4 py-2">Keluhan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="r, stat : ${listReservasi}" class="odd:bg-white even:bg-blue-50">
-                            <td class="border border-gray-300 px-4 py-2" th:text="${stat.count}">1</td>
-                            <td class="border border-gray-300 px-4 py-2" th:text="${r.pasien.nama}">-</td>
-                            <td class="border border-gray-300 px-4 py-2" th:text="${r.pasien.alamat}">-</td>
-                            <td class="border border-gray-300 px-4 py-2" th:text="${r.pasien.noTelp}">-</td>
-                            <td class="border border-gray-300 px-4 py-2" th:text="${r.jadwal.dokter.nama}">-</td>
-                            <td class="border border-gray-300 px-4 py-2" th:text="${r.jadwal.hari}">-</td>
-                            <td class="border border-gray-300 px-4 py-2"
-                                th:text="${r.jadwal.jamMulai + ' - ' + r.jadwal.jamSelesai}">-</td>
-                            <td class="border border-gray-300 px-4 py-2" th:text="${r.keluhan}">-</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
     </main>
 
     <!-- Footer -->
-    <footer class="bg-blue-800 text-white py-6 mt-auto">
+    <footer class="bg-blue-800 text-white py-4 mt-auto">
         <div class="container mx-auto px-6 text-center">
             <p>&copy; 2025 Klinik Sehat. All rights reserved.</p>
         </div>
     </footer>
 
 </body>
-
 </html>

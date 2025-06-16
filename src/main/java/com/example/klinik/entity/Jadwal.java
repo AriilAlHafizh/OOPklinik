@@ -1,11 +1,6 @@
 package com.example.klinik.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class Jadwal {
@@ -22,11 +17,9 @@ public class Jadwal {
     @JoinColumn(name = "dokter_id")  // FK ke tabel dokter
     private Dokter dokter;
 
-    public Jadwal() {
-    }
+    public Jadwal() {}
 
     // Getter & Setter
-
     public Long getId() {
         return id;
     }
@@ -65,5 +58,17 @@ public class Jadwal {
 
     public void setDokter(Dokter dokter) {
         this.dokter = dokter;
+    }
+
+    // 🔽 Tambahkan ini supaya bisa menerima dokterId dari form
+    public Long getDokterId() {
+        return (dokter != null) ? dokter.getId() : null;
+    }
+
+    public void setDokterId(Long dokterId) {
+        if (this.dokter == null) {
+            this.dokter = new Dokter();
+        }
+        this.dokter.setId(dokterId);
     }
 }

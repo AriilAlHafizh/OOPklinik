@@ -3,11 +3,14 @@ package com.example.klinik.controller;
 import com.example.klinik.entity.Jadwal;
 import com.example.klinik.entity.Pasien;
 import com.example.klinik.entity.Reservasi;
+import com.example.klinik.entity.Dokter;
 import com.example.klinik.repository.JadwalRepository;
 import com.example.klinik.repository.PasienRepository;
 import com.example.klinik.repository.ReservasiRepository;
+import com.example.klinik.repository.DokterRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,23 +31,24 @@ public class ReservasiController {
     @Autowired
     private ReservasiRepository reservasiRepository;
 
+    @Autowired
+    private DokterRepository dokterRepository;
+
     @GetMapping
     public String showReservasiPage(Model model, Principal principal) {
-        String username = principal.getName(); // Ambil username login
-        Pasien pasien = pasienRepository.findByUsername(username); // Ambil pasien berdasarkan username
+        String username = principal.getName();
+        Pasien pasien = pasienRepository.findByUsername(username);
 
         if (pasien == null) {
-            // Jika user belum punya data pasien, arahkan ke pengisian profil / error
             return "redirect:/pasien/profil";
         }
 
-        List<Jadwal> jadwals = jadwalRepository.findAll();
-
+        List<Dokter> listDokter = dokterRepository.findAll();
         model.addAttribute("reservasi", new Reservasi());
-        model.addAttribute("jadwals", jadwals);
-        model.addAttribute("pasien", pasien); // untuk ditampilkan jika perlu
+        model.addAttribute("listDokter", listDokter);
+        model.addAttribute("pasien", pasien);
 
-        return "reservasi"; // templates/reservasi.html
+        return "reservasi";
     }
 
     @PostMapping("/buat")
@@ -53,12 +57,20 @@ public class ReservasiController {
         Pasien pasien = pasienRepository.findByUsername(username);
 
         if (pasien == null) {
-            return "redirect:/pasien/profil"; // redirect jika data pasien belum ada
+            return "redirect:/pasien/profil";
         }
 
         reservasi.setPasien(pasien);
         reservasiRepository.save(reservasi);
 
-        return "redirect:/pasien/dashboard"; // setelah simpan, kembali ke dashboard
+        return "redirect:/pasien/dashboard";
+    }
+
+    // Untuk AJAX: Ambil daftar jadwal berdasarkan dokter
+    @GetMapping("/jadwal-by-dokter/{dokterId}")
+    @ResponseBody
+    public ResponseEntity<List<Jadwal>> getJadwalByDokter(@PathVariable Long dokterId) {
+        List<Jadwal> jadwalList = jadwalRepository.findByDokter_Id(dokterId);
+        return ResponseEntity.ok(jadwalList);
     }
 }
