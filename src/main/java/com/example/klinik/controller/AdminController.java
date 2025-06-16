@@ -1,11 +1,9 @@
 package com.example.klinik.controller;
 
-import com.example.klinik.entity.Admin;
-import com.example.klinik.entity.Pasien;
-import com.example.klinik.entity.Dokter;
-import com.example.klinik.repository.AdminRepository;
-import com.example.klinik.repository.PasienRepository;
-import com.example.klinik.repository.DokterRepository;
+import com.example.klinik.entity.*;
+import com.example.klinik.repository.*;
+
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,12 +23,19 @@ public class AdminController {
     @Autowired
     private DokterRepository dokterRepository;
 
+    @Autowired
+    private JadwalRepository jadwalRepository;
+
+    @Autowired
+    private ReservasiRepository reservasiRepository;
+
     // ================= DASHBOARD =================
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         model.addAttribute("totalAdmin", adminRepository.count());
         model.addAttribute("totalDokter", dokterRepository.count());
         model.addAttribute("totalPasien", pasienRepository.count());
+        model.addAttribute("totalReservasi", reservasiRepository.count());
         return "admin/dashboard-admin";
     }
 
@@ -116,5 +121,80 @@ public class AdminController {
     public String hapusPasien(@PathVariable Long id) {
         pasienRepository.deleteById(id);
         return "redirect:/admin/pasien";
+    }
+
+    // ================= CRUD JADWAL =================
+    @GetMapping("/jadwal")
+    public String listJadwal(Model model) {
+        model.addAttribute("listJadwal", jadwalRepository.findAll());
+        model.addAttribute("jadwal", new Jadwal());
+        model.addAttribute("listDokter", dokterRepository.findAll());
+        return "admin/jadwal";
+    }
+
+    @PostMapping("/jadwal")
+    public String simpanJadwal(@ModelAttribute Jadwal jadwal) {
+        jadwalRepository.save(jadwal);
+        return "redirect:/admin/jadwal";
+    }
+
+    @GetMapping("/jadwal/edit/{id}")
+    public String editJadwal(@PathVariable Long id, Model model) {
+        Jadwal jadwal = jadwalRepository.findById(id).orElse(null);
+        model.addAttribute("jadwal", jadwal);
+        model.addAttribute("listJadwal", jadwalRepository.findAll());
+        model.addAttribute("listDokter", dokterRepository.findAll());
+        return "admin/jadwal";
+    }
+
+    @GetMapping("/jadwal/hapus/{id}")
+    public String hapusJadwal(@PathVariable Long id) {
+        jadwalRepository.deleteById(id);
+        return "redirect:/admin/jadwal";
+    }
+
+    // ================= LIHAT RESERVASI =================
+    @GetMapping("/reservasi")
+    public String listReservasi(Model model) {
+        model.addAttribute("listReservasi", reservasiRepository.findAll());
+        model.addAttribute("listPasien", pasienRepository.findAll());
+        model.addAttribute("listJadwal", jadwalRepository.findAll());
+        model.addAttribute("reservasi", new Reservasi());
+        return "admin/reservasi";
+    }
+
+    @PostMapping("/reservasi")
+    public String simpanReservasi(@ModelAttribute Reservasi reservasi) {
+        reservasiRepository.save(reservasi);
+        return "redirect:/admin/reservasi";
+    }
+
+    @GetMapping("/reservasi/edit/{id}")
+    public String editReservasi(@PathVariable Long id, Model model) {
+        Reservasi reservasi = reservasiRepository.findById(id).orElse(null);
+        model.addAttribute("reservasi", reservasi);
+        model.addAttribute("listPasien", pasienRepository.findAll());
+        model.addAttribute("listJadwal", jadwalRepository.findAll());
+        model.addAttribute("listReservasi", reservasiRepository.findAll());
+        return "admin/reservasi";
+    }
+
+    @GetMapping("/reservasi/hapus/{id}")
+    public String hapusReservasi(@PathVariable Long id) {
+        reservasiRepository.deleteById(id);
+        return "redirect:/admin/reservasi";
+    }
+
+    // ================= API Untuk JS =================
+    @ResponseBody
+    @GetMapping("/reservasi/pasien/{id}")
+    public Pasien getPasienById(@PathVariable Long id) {
+        return pasienRepository.findById(id).orElse(null);
+    }
+
+    @ResponseBody
+    @GetMapping("/reservasi/jadwal/{id}")
+    public Jadwal getJadwalById(@PathVariable Long id) {
+        return jadwalRepository.findById(id).orElse(null);
     }
 }
