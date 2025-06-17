@@ -1,66 +1,69 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Data Reservasi</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-blue-50 text-gray-800 font-sans">
-<div class="flex min-h-screen">
-  <!-- Sidebar -->
-  <aside class="w-64 bg-blue-900 text-white p-6 space-y-4">
-    <h2 class="text-2xl font-bold mb-6">Klinik Admin</h2>
-    <nav class="space-y-4">
-      <a href="/admin/dashboard" class="block py-2 px-4 hover:bg-blue-700 rounded">Dashboard</a>
-      <a href="/admin/dokter" class="block py-2 px-4 hover:bg-blue-700 rounded">Dokter</a>
-      <a href="/admin/pasien" class="block py-2 px-4 hover:bg-blue-700 rounded">Pasien</a>
-      <a href="/admin/jadwal" class="block py-2 px-4 hover:bg-blue-700 rounded">Jadwal</a>
-      <a href="/admin/reservasi" class="block py-2 px-4 bg-blue-700 rounded">Reservasi</a>
-      <a href="/admin/kelola-admin" class="block py-2 px-4 hover:bg-blue-700 rounded">Admin</a>
-      <a href="/logout" class="block py-2 px-4 mt-10 bg-red-500 hover:bg-red-600 text-white rounded text-center">Logout</a>
-    </nav>
-  </aside>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-blue-800 text-white p-6 space-y-6">
+      <h2 class="text-2xl font-bold mb-10 text-center">KLINIK</h2>
+      <nav class="space-y-4">
+        <a href="/admin/dashboard" class="block py-2 px-4 hover:bg-blue-700 rounded">Dashboard</a>
+        <a href="/admin/dokter" class="block py-2 px-4 hover:bg-blue-700 rounded">Dokter</a>
+        <a href="/admin/pasien" class="block py-2 px-4 hover:bg-blue-700 rounded">Pasien</a>
+        <a href="/admin/jadwal" class="block py-2 px-4 hover:bg-blue-700 rounded">Jadwal</a>
+        <a href="/admin/reservasi" class="block py-2 px-4 bg-blue-700 rounded">Reservasi</a>
+        <a href="/admin/kelola-admin" class="block py-2 px-4 hover:bg-blue-700 rounded">Admin</a>
+        <a href="/logout"
+          class="block py-2 px-4 mt-10 bg-red-500 hover:bg-red-600 text-white rounded text-center">Logout</a>
+      </nav>
+    </aside>
 
-  <!-- Main Content -->
-  <main class="flex-1 p-6">
-    <h1 class="text-4xl font-bold text-blue-700 mb-10 text-center">Data Reservasi</h1>
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <h1 class="text-4xl font-bold text-blue-700 mb-10 text-center">Data Reservasi</h1>
 
-    <div class="overflow-x-auto">
-      <table class="min-w-full bg-white rounded-xl shadow-md border">
-        <thead class="bg-blue-600 text-white">
-        <tr>
-          <th class="py-3 px-4 text-left">#</th>
-          <th class="py-3 px-4 text-left">Pasien</th>
-          <th class="py-3 px-4 text-left">Dokter</th>
-          <th class="py-3 px-4 text-left">Hari</th>
-          <th class="py-3 px-4 text-left">Jam</th>
-          <th class="py-3 px-4 text-left">Tanggal</th>
-          <th class="py-3 px-4 text-left">Status</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="r, stat : ${listReservasi}" class="odd:bg-white even:bg-gray-100">
-          <td class="py-2 px-4" th:text="${stat.index + 1}"></td>
-          <td class="py-2 px-4" th:text="${r.pasien.nama}"></td>
-          <td class="py-2 px-4" th:text="${r.jadwal.dokter.nama}"></td>
-          <td class="py-2 px-4" th:text="${r.jadwal.hari}"></td>
-          <td class="py-2 px-4" th:text="${r.jadwal.jamMulai + ' - ' + r.jadwal.jamSelesai}"></td>
-          <td class="py-2 px-4" th:text="${r.tanggalReservasi}"></td>
-          <td class="py-2 px-4">
-          <select id="statusSelect" name="status" 
-            class="border border-gray-300 rounded-lg p-2 text-sm font-medium bg-white text-gray-700 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition duration-150 ease-in-out">
-              <option value="Menunggu" th:selected="${r.status == 'Menunggu'}">Menunggu</option>
-              <option value="Diterima" th:selected="${r.status == 'Diterima'}">Diterima</option>
-              <option value="Ditolak" th:selected="${r.status == 'Ditolak'}">Ditolak</option>
-          </select>
-        </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </main>
-</div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white rounded-xl shadow-md border">
+          <thead class="bg-blue-600 text-white">
+            <tr>
+              <th class="py-3 px-4 text-left">#</th>
+              <th class="py-3 px-4 text-left">Pasien</th>
+              <th class="py-3 px-4 text-left">Dokter</th>
+              <th class="py-3 px-4 text-left">Hari</th>
+              <th class="py-3 px-4 text-left">Jam</th>
+              <th class="py-3 px-4 text-left">Tanggal</th>
+              <th class="py-3 px-4 text-left">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="r, stat : ${listReservasi}" class="odd:bg-white even:bg-gray-100">
+              <td class="py-2 px-4" th:text="${stat.index + 1}"></td>
+              <td class="py-2 px-4" th:text="${r.pasien.nama}"></td>
+              <td class="py-2 px-4" th:text="${r.jadwal.dokter.nama}"></td>
+              <td class="py-2 px-4" th:text="${r.jadwal.hari}"></td>
+              <td class="py-2 px-4" th:text="${r.jadwal.jamMulai + ' - ' + r.jadwal.jamSelesai}"></td>
+              <td class="py-2 px-4" th:text="${r.tanggalReservasi}"></td>
+              <td class="py-2 px-4">
+                <select id="statusSelect" name="status"
+                  class="border border-gray-300 rounded-lg p-2 text-sm font-medium bg-white text-gray-700 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition duration-150 ease-in-out">
+                  <option value="Menunggu" th:selected="${r.status == 'Menunggu'}">Menunggu</option>
+                  <option value="Diterima" th:selected="${r.status == 'Diterima'}">Diterima</option>
+                  <option value="Ditolak" th:selected="${r.status == 'Ditolak'}">Ditolak</option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
 </body>
 <script>
   const select = document.getElementById('statusSelect');
@@ -83,4 +86,5 @@
   // Update setiap kali select berubah
   select.addEventListener('change', updateSelectColor);
 </script>
+
 </html>

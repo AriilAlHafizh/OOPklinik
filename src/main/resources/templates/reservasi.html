@@ -4,11 +4,239 @@
     <meta charset="UTF-8" />
     <title>Reservasi Pasien - Klinik Sehat</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pulse-slow {
+            animation: pulse 4s infinite;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-logout:hover {
+            background: rgba(220, 38, 38, 0.9);
+            transform: translateY(-1px);
+        }
+        
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+        
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-8px);
+        }
+        
+        .navbar-glass {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .welcome-glow {
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Custom input styles with glass effect */
+        .glass-input {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+            outline: none;
+        }
+        
+        .glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .glass-input-readonly {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Background pattern */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: twinkle 4s ease-in-out infinite alternate;
+            z-index: 0;
+        }
+        
+        @keyframes twinkle {
+            from { opacity: 0.3; }
+            to { opacity: 0.8; }
+        }
+
+        /* Medical themed floating elements */
+        .floating-element {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-element:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .floating-element:nth-child(2) {
+            top: 15%;
+            right: 8%;
+            animation-delay: 2s;
+        }
+        
+        .floating-element:nth-child(3) {
+            bottom: 25%;
+            left: 10%;
+            animation-delay: 4s;
+        }
+        
+        .floating-element:nth-child(4) {
+            bottom: 15%;
+            right: 15%;
+            animation-delay: 6s;
+        }
+
+        .floating-element:nth-child(5) {
+            top: 50%;
+            left: 3%;
+            animation-delay: 1s;
+        }
+
+        .floating-element:nth-child(6) {
+            top: 60%;
+            right: 5%;
+            animation-delay: 3s;
+        }
+
+        /* Content wrapper to ensure proper z-index */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Navigation enhancements */
+        .nav-link {
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Form section styling */
+        .form-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Footer styling */
+        .footer-glass {
+            background: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Label styling */
+        .glass-label {
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
     <script>
         // JavaScript untuk filter jadwal berdasarkan dokter
         function filterJadwal() {
             const dokterId = document.getElementById('dokterSelect').value;
-            fetch(`/reservasi/jadwal-by-dokter/${dokterId}`)  // ✅ Perbaikan di sini
+            fetch(`/reservasi/jadwal-by-dokter/${dokterId}`)
                 .then(response => response.json())
                 .then(data => {
                     const jadwalSelect = document.getElementById('jadwalSelect');
@@ -23,83 +251,160 @@
         }
     </script>
 </head>
-<body class="bg-blue-50 text-gray-800 min-h-screen flex flex-col">
+<body class="scroll-smooth min-h-screen flex flex-col relative">
 
-    <!-- Header -->
-    <header class="bg-blue-800 text-white py-4 shadow-md">
+    <!-- Floating medical elements -->
+    <div class="floating-element">
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="white">
+            <path d="M19 8h-2v3h-3v2h3v3h2v-3h3v-2h-3V8zM4 6h5v2H4v1h5v2H4v1h5v2H4c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2zm0 8c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h5v-2H4v-1h5v-2H4v-1z"/>
+        </svg>
+    </div>
+    
+    <div class="floating-element">
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="white">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+    </div>
+    
+    <div class="floating-element">
+        <svg width="55" height="55" viewBox="0 0 24 24" fill="white">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+    </div>
+    
+    <div class="floating-element">
+        <svg width="45" height="45" viewBox="0 0 24 24" fill="white">
+            <path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4 0h-2v6h2v-6zm2.5-5H19v2h-1.5v.5H17V8h-1V6h-.5V4h1V3h2v1h.5v2zm-2.5 7v7c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h1V4c0-1.1.9-2 2-2h6c1.1 0 2 .9 2 2v2h1c1.1 0 2 .9 2 2v1h-2v7z"/>
+        </svg>
+    </div>
+
+    <div class="floating-element">
+        <svg width="65" height="65" viewBox="0 0 24 24" fill="white">
+            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 7C14.5 7 14.1 7.2 13.9 7.5L13 9L11.5 7.5C11.1 7.1 10.6 6.9 10 7L4 7V9L9.2 9L12 11.8L14.8 9L21 9Z"/>
+        </svg>
+    </div>
+
+    <div class="floating-element">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="white">
+            <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+        </svg>
+    </div>
+
+    <div class="content-wrapper">
+        <!-- Header -->
+    <header class="navbar-glass sticky top-0 z-50 py-4 shadow-lg">
         <div class="container mx-auto px-6 flex justify-between items-center">
-            <h1 class="text-2xl font-bold">Klinik Sehat</h1>
-            <nav class="space-x-4">
-                <a href="/user/dashboard" class="hover:underline">Dashboard</a>
-                <a href="/user/reservasi" class="underline font-semibold">Reservasi</a>
-                <a href="/logout" class="hover:underline">Logout</a>
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-white">Klinik Sehat</h1>
+            </div>
+            <nav class="flex items-center space-x-6">
+                <a href="/dashboard" class="text-white/90 hover:text-white transition-colors duration-200">dashboard</a>
+                <a href="/logout" class="btn-secondary text-white font-semibold px-6 py-2 rounded-lg">Logout</a>
             </nav>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-6 py-10 flex-grow">
-        <section class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md mb-12">
-            <h2 class="text-xl font-semibold mb-6 text-blue-800">Form Reservasi Pasien</h2>
-            <form th:action="@{/reservasi/buat}" method="post" class="space-y-6">
+        <!-- Main Content -->
+        <main class="container mx-auto px-6 py-12 flex-grow">
+            <section class="max-w-4xl mx-auto form-section p-8 rounded-2xl shadow-2xl mb-12 hover-lift welcome-glow">
+                <h2 class="text-3xl font-bold mb-8 gradient-text text-center pulse-slow">
+                    📋 Form Reservasi Pasien
+                </h2>
+                
+                <form th:action="@{/reservasi/buat}" method="post" class="space-y-8">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="namaPasien" class="block glass-label text-sm tracking-wide">
+                                👤 Nama Pasien
+                            </label>
+                            <input type="text" 
+                                   id="namaPasien" 
+                                   name="namaPasien"
+                                   th:value="${pasien.nama}" 
+                                   readonly
+                                   class="glass-input-readonly w-full px-4 py-3 rounded-lg font-medium" />
+                        </div>
 
+                        <div class="space-y-2">
+                            <label for="tanggalReservasi" class="block glass-label text-sm tracking-wide">
+                                📅 Tanggal Reservasi
+                            </label>
+                            <input type="date" 
+                                   id="tanggalReservasi" 
+                                   name="tanggalReservasi" 
+                                   required
+                                   class="glass-input w-full px-4 py-3 rounded-lg text-white font-medium" />
+                        </div>
+                    </div>
 
-                <div>
-                    <label for="namaPasien" class="block mb-2 font-medium text-gray-700">Nama Pasien</label>
-                    <input type="text" id="namaPasien" name="namaPasien"
-                           th:value="${pasien.nama}" readonly
-                           class="w-full px-4 py-2 border border-blue-300 rounded-lg bg-gray-100 text-gray-700" />
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="dokterSelect" class="block glass-label text-sm tracking-wide">
+                                👨‍⚕️ Pilih Dokter
+                            </label>
+                            <select id="dokterSelect" 
+                                    name="dokterId" 
+                                    required 
+                                    onchange="filterJadwal()"
+                                    class="glass-input w-full px-4 py-3 rounded-lg text-white font-medium">
+                                <option value="">-- Pilih Dokter --</option>
+                                <option th:each="dokter : ${listDokter}" 
+                                        th:value="${dokter.id}" 
+                                        th:text="${dokter.nama}"></option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="jadwalSelect" class="block glass-label text-sm tracking-wide">
+                                🕐 Pilih Jadwal
+                            </label>
+                            <select id="jadwalSelect" 
+                                    name="jadwal.Id" 
+                                    required
+                                    class="glass-input w-full px-4 py-3 rounded-lg text-white font-medium">
+                                <option value="">-- Pilih Jadwal --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="keluhan" class="block glass-label text-sm tracking-wide">
+                            📝 Keluhan / Gejala
+                        </label>
+                        <textarea id="keluhan" 
+                                  name="keluhan" 
+                                  rows="4" 
+                                  required
+                                  class="glass-input w-full px-4 py-3 rounded-lg text-white font-medium resize-none"
+                                  placeholder="Jelaskan keluhan atau gejala yang Anda rasakan secara detail..."></textarea>
+                    </div>
+
+                    <div class="flex justify-center pt-6">
+                        <button type="submit"
+                                class="btn-primary text-white font-bold px-8 py-4 rounded-lg text-lg tracking-wide">
+                            💾 Simpan Reservasi
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer-glass text-white py-6 mt-auto">
+            <div class="container mx-auto px-6 text-center">
+                <div class="glass-card rounded-lg p-4 inline-block">
+                    <p class="text-white/90 font-medium">
+                        &copy; 2025 Klinik Sehat. Melayani dengan sepenuh hati ❤️
+                    </p>
                 </div>
-
-                <div>
-                    <label for="tanggalReservasi" class="block mb-2 font-medium text-gray-700">Tanggal Reservasi</label>
-                    <input type="date" id="tanggalReservasi" name="tanggalReservasi" required
-                           class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
-                </div>
-
-                <div>
-                    <label for="dokterSelect" class="block mb-2 font-medium text-gray-700">Pilih Dokter</label>
-                    <select id="dokterSelect" name="dokterId" required onchange="filterJadwal()"
-                            class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- Pilih Dokter --</option>
-                        <option th:each="dokter : ${listDokter}" 
-                                th:value="${dokter.id}" 
-                                th:text="${dokter.nama}"></option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="jadwalSelect" class="block mb-2 font-medium text-gray-700">Pilih Jadwal</label>
-                    <select id="jadwalSelect" name="jadwal.Id" required
-                            class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- Pilih Jadwal --</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="keluhan" class="block mb-2 font-medium text-gray-700">Keluhan</label>
-                    <textarea id="keluhan" name="keluhan" rows="4" required
-                        class="w-full border border-blue-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 resize-none"
-                        placeholder="Masukkan keluhan Anda..."></textarea>
-                </div>
-
-                <div>
-                    <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition">
-                        Simpan Reservasi
-                    </button>
-                </div>
-
-            </form>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-blue-800 text-white py-4 mt-auto">
-        <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2025 Klinik Sehat. All rights reserved.</p>
-        </div>
-    </footer>
+            </div>
+        </footer>
+    </div>
 
 </body>
 </html>
