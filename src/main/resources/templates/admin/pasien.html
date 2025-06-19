@@ -42,19 +42,9 @@
                             class="w-full border border-blue-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     </div>
                     <div>
-                        <label class="block font-medium mb-1">NIK</label>
-                        <input type="text" th:field="*{nik}" required
-                            class="w-full border border-blue-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                    </div>
-                    <div>
                         <label class="block font-medium mb-1">Alamat</label>
                         <textarea th:field="*{alamat}" required
                             class="w-full border border-blue-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                    </div>
-                    <div>
-                        <label class="block font-medium mb-1">Telepon</label>
-                        <input type="text" th:field="*{telepon}" required
-                            class="w-full border border-blue-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     </div>
                     <div>
                         <label class="block font-medium mb-1">Username</label>
@@ -80,9 +70,7 @@
                         <tr>
                             <th class="py-3 px-4 text-left">#</th>
                             <th class="py-3 px-4 text-left">Nama</th>
-                            <th class="py-3 px-4 text-left">NIK</th>
                             <th class="py-3 px-4 text-left">Alamat</th>
-                            <th class="py-3 px-4 text-left">Telepon</th>
                             <th class="py-3 px-4 text-left">Username</th>
                             <th class="py-3 px-4 text-center">Aksi</th>
                         </tr>
@@ -91,9 +79,7 @@
                         <tr th:each="pasien, stat : ${listPasien}" class="odd:bg-white even:bg-blue-50">
                             <td class="py-2 px-4" th:text="${stat.index + 1}"></td>
                             <td class="py-2 px-4" th:text="${pasien.nama}"></td>
-                            <td class="py-2 px-4" th:text="${pasien.nik}"></td>
                             <td class="py-2 px-4" th:text="${pasien.alamat}"></td>
-                            <td class="py-2 px-4" th:text="${pasien.telepon}"></td>
                             <td class="py-2 px-4" th:text="${pasien.username}"></td>
                             <td class="py-2 px-4 text-center">
                                 <div class="flex justify-center gap-2">
